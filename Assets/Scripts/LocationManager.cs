@@ -19,6 +19,13 @@ namespace MoveCountWatch
         private LocationInfo _lastLocation = null;
         private double _moveDistance = 0f;
 
+        private void Start()
+        {
+            _latitudeText.text = "latitude: 0";
+            _longitudeText.text = "longitude: 0";
+            _totalDistance.text = "total distance: 0 m";
+        }
+        
         private void Update()
         {
             // 60フレームごとに現在地を取得する
