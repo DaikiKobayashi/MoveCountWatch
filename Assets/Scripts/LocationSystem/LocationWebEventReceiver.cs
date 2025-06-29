@@ -1,6 +1,6 @@
 ﻿#if UNITY_WEBGL
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace MoveCountWatch
@@ -10,11 +10,11 @@ namespace MoveCountWatch
         [DllImport("__Internal")]
         private static extern void GetCurrentPosition();
 
-        private TaskCompletionSource<LocationInfo> _tcs;
+        private UniTaskCompletionSource<LocationInfo> _tcs;
         
-        public async ValueTask<LocationInfo> GetCurrentPositionCore()
+        public async UniTask<LocationInfo> GetCurrentPositionCore()
         {
-            _tcs = new TaskCompletionSource<LocationInfo>();
+            _tcs = new UniTaskCompletionSource<LocationInfo>();
             GetCurrentPosition();
 
             return await _tcs.Task;

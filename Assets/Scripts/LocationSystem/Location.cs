@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 
 namespace MoveCountWatch
 {
@@ -10,7 +10,7 @@ namespace MoveCountWatch
         
         public void Initialize();
         
-        public ValueTask<LocationInfo> GetLocationAsync();
+        public UniTask<LocationInfo> GetLocationAsync();
     }
 
     public enum LocationSystemState

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,7 +52,7 @@ namespace MoveCountWatch
             {
                 if (_lastLocation == null) return;
 
-                Task.Run(async () =>
+                UniTask.Void(async () =>
                 {
                     var tex = await _mapManager.GetMapTexture(_lastLocation.Latitude, _lastLocation.Longitude);
                     
@@ -75,7 +75,7 @@ namespace MoveCountWatch
             {
                 _frameCount = 0;
 
-                Task.Run(async () =>
+                UniTask.Void(async () =>
                 {
                     try
                     {

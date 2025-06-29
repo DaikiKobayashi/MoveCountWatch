@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace MoveCountWatch
@@ -25,13 +25,13 @@ namespace MoveCountWatch
             }
             
             // サービスが有効になるまで待機
-            Task.Run(async () =>
+            UniTask.Void(async () =>
             {
                 while (true)
                 {
                     if (Input.location.status is LocationServiceStatus.Initializing)
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(0.1f));
+                        await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
                     }
                     else
                     {
@@ -55,7 +55,7 @@ namespace MoveCountWatch
             });
         }
 
-        public async ValueTask<LocationInfo> GetLocationAsync()
+        public async UniTask<LocationInfo> GetLocationAsync()
         {
             if (State != LocationSystemState.Running)
             {

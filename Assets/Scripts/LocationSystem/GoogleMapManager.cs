@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -6,12 +6,12 @@ namespace MoveCountWatch
 {
     public class GoogleMapManager
     {
-        public ValueTask<Texture2D> GetMapTexture(double latitude, double longitude)
+        public UniTask<Texture2D> GetMapTexture(double latitude, double longitude)
         {
             return GetMapTextureWithGoogle(latitude, longitude);
         }
 
-        private async ValueTask<Texture2D> GetMapTextureWithGoogle(double latitude, double longitude)
+        private async UniTask<Texture2D> GetMapTextureWithGoogle(double latitude, double longitude)
         {
             const string GoogleApiKey = "AIzaSyA5dQSvqDAhUkyApTeLb1gB9afwWcgbnjM";
             

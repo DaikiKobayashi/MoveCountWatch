@@ -1,6 +1,6 @@
 ﻿#if UNITY_WEBGL
 using System;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace MoveCountWatch
@@ -19,7 +19,7 @@ namespace MoveCountWatch
             receiver = receiverObject.AddComponent<LocationWebEventReceiver>();
         }
 
-        public async ValueTask<LocationInfo> GetLocationAsync()
+        public async UniTask<LocationInfo> GetLocationAsync()
         {
             if (State != LocationSystemState.Running)
             {
