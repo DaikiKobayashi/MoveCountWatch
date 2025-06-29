@@ -29,6 +29,14 @@ namespace MoveCountWatch
 
         private void Start()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR   
+            UnityEngine.Application.logMessageReceived += (string logString, string stackTrace, LogType type) => {
+                if (type == LogType.Exception) {
+                    LogUtil.OutputConsoleLog(logString);
+                }
+            };
+#endif
+            
             _latitudeText.text = "latitude: 0";
             _longitudeText.text = "longitude: 0";
             _totalDistance.text = "total distance: 0 m";
