@@ -12,7 +12,7 @@ mergeInto(LibraryManager.library, {
 mergeInto(LibraryManager.library, {
  
   ConsoleLog: function(message) {
-    console.log(Pointer_stringify(message));
+    console.log(UTF8ToString(message));
   }
  
 });
