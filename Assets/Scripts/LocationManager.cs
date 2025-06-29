@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace MoveCountWatch
 {
     public class LocationManager : MonoBehaviour
     {
-        [SerializeField] private Text _latitudeText; // 緯度
+        [SerializeField] private Text _latitudeText;  // 緯度
         [SerializeField] private Text _longitudeText; // 経度
         [SerializeField] private Text _totalDistance; // 移動距離
 
+
+        [Space(10)] 
+        [SerializeField] private Button _executeMapFetchButton;
+        [SerializeField] private Image _mapImage;
+        
+        private ILocation _location;
+        private GoogleMapManager _mapManager;
+        
         [DllImport("__Internal")]
         private static extern void GetCurrentPosition();
 
@@ -24,29 +32,66 @@ namespace MoveCountWatch
             _latitudeText.text = "latitude: 0";
             _longitudeText.text = "longitude: 0";
             _totalDistance.text = "total distance: 0 m";
+            
+            // Initialize LocationSystem
+            _location =
+#if UNITY_WEBGL && !UNITY_EDITOR
+                new LocationWeb();  
+#else
+                new LocationOther();
+#endif
+            _location.Initialize();
+            
+            _executeMapFetchButton.onClick.AddListener(() =>
+            {
+                if (_lastLocation == null) return;
+
+                Task.Run(async () =>
+                {
+                    var tex = await _mapManager.GetMapTexture(_lastLocation.Latitude, _lastLocation.Longitude);
+                    
+                    // スプライト（インスタンス）を動的に生成
+                    _mapImage.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
+                });
+            });
         }
         
         private void Update()
         {
+            if (_location.State != LocationSystemState.Running)
+            {
+                Debug.LogWarning("LocationSystem is not running.");
+                return;
+            }
+
             // 60フレームごとに現在地を取得する
             if (_frameCount == 60)
             {
-                // JavaScriptの呼び出し
-                GetCurrentPosition();
                 _frameCount = 0;
+
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        var location = await _location.GetLocationAsync();
+                        if (location != null)
+                        {
+                            ShowLocation(location);
+                        }
+                    }
+                    catch(Exception error)
+                    {
+                        Debug.LogError(error);
+                    }
+                    finally { }
+                });
             }
 
             _frameCount++;
         }
-
-        /// <summary>
-        /// JavaScriptから呼び出す関数。
-        /// 緯度と経度を画面に表示する。
-        /// </summary>
-        public void ShowLocation(string location)
+        
+        private void ShowLocation(LocationInfo newLocation)
         {
-            var newLocation = new LocationInfo(location);
-
             _latitudeText.text = $"latitude: {newLocation.Latitude}";
             _longitudeText.text = $"longitude: {newLocation.Longitude}";
             
@@ -67,52 +112,5 @@ namespace MoveCountWatch
             
             _lastLocation = newLocation;
         }
-    }
-}
-
-public class LocationInfo
-{
-    public double Latitude { get; }
-    public double Longitude { get; }
-
-    public LocationInfo(string location)
-    {
-        var locations = location.Split(',');
-        var latitude = double.Parse(locations[0]);
-        var longitude = double.Parse(locations[1]);
-        
-        Latitude = latitude;
-        Longitude = longitude;
-    }
-
-    public LocationInfo(double latitude, double longitude)
-    {
-        Latitude = latitude;
-        Longitude = longitude;
-    }
-
-    public bool Equals(LocationInfo other)
-    {
-        return Latitude.Equals(other.Latitude) && Longitude.Equals(other.Longitude);
-    }
-}
-
-public static class LocationManagerExtension
-{
-    public static double CalcMoveDistance(double lat1, double lon1, double lat2, double lon2)
-    {
-        // Radius of the Earth in kilometers
-        const int R = 6378137;
-        
-        // Haversine formula
-        var dLat = (lat2 - lat1) * (Math.PI / 180);
-        var dLon = (lon2 - lon1) * (Math.PI / 180);
-        var a =
-            Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-            Math.Cos(lat1 * (Math.PI / 180)) * Math.Cos(lat2 * (Math.PI / 180)) *
-            Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-        var distance = R * c;
-        return distance;
     }
 }

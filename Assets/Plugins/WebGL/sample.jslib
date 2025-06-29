@@ -3,7 +3,7 @@ mergeInto(LibraryManager.library, {
     navigator.geolocation.getCurrentPosition(
       function(position) {
         xy = position.coords.latitude + "," + position.coords.longitude;   
-	    SendMessage('LocationManager', 'ShowLocation', xy); 
+	    SendMessage('LocationWebEventReceiver', 'GetCurrentPositionCallBack', xy); 
       }
     );
   },
