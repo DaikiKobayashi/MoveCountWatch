@@ -1154,7 +1154,7 @@ MonoBehaviour:
   _latitudeText: {fileID: 1147761504}
   _longitudeText: {fileID: 598600285}
   _totalDistance: {fileID: 1308389587}
-  _keyInputField: {fileID: 0}
+  _keyInputField: {fileID: 187470409}
   _executeMapFetchButton: {fileID: 1205170443}
   _mapImage: {fileID: 1813971404}
 --- !u!1 &1308389585
