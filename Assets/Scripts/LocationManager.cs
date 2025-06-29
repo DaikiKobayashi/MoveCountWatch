@@ -31,9 +31,7 @@ namespace MoveCountWatch
         {
 #if UNITY_WEBGL && !UNITY_EDITOR   
             UnityEngine.Application.logMessageReceived += (string logString, string stackTrace, LogType type) => {
-                if (type == LogType.Exception) {
-                    LogUtil.OutputConsoleLog(logString);
-                }
+                LogUtil.OutputConsoleLog($"[{type}] {logString}");
             };
 #endif
             
