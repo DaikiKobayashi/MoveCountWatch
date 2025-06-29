@@ -12,6 +12,7 @@ namespace MoveCountWatch
         [SerializeField] private Text _longitudeText; // 経度
         [SerializeField] private Text _totalDistance; // 移動距離
 
+        [SerializeField] private InputField _keyInputField;
 
         [Space(10)] 
         [SerializeField] private Button _executeMapFetchButton;
@@ -38,6 +39,7 @@ namespace MoveCountWatch
             _latitudeText.text = "latitude: 0";
             _longitudeText.text = "longitude: 0";
             _totalDistance.text = "total distance: 0 m";
+            _keyInputField.text = "";
             
             // Initialize LocationSystem
             _location =
@@ -54,6 +56,7 @@ namespace MoveCountWatch
 
                 UniTask.Void(async () =>
                 {
+                    _mapManager.SetApiKey(_keyInputField.text);
                     var tex = await _mapManager.GetMapTexture(_lastLocation.Latitude, _lastLocation.Longitude);
                     
                     // スプライト（インスタンス）を動的に生成

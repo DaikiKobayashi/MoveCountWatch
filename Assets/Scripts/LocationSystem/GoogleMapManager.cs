@@ -6,6 +6,13 @@ namespace MoveCountWatch
 {
     public class GoogleMapManager
     {
+        private string _apiKey;
+
+        public void SetApiKey(string apiKey)
+        {
+            _apiKey = apiKey;
+        }
+        
         public UniTask<Texture2D> GetMapTexture(double latitude, double longitude)
         {
             return GetMapTextureWithGoogle(latitude, longitude);
@@ -13,8 +20,6 @@ namespace MoveCountWatch
 
         private async UniTask<Texture2D> GetMapTextureWithGoogle(double latitude, double longitude)
         {
-            const string GoogleApiKey = "AIzaSyA5dQSvqDAhUkyApTeLb1gB9afwWcgbnjM";
-            
             // ベース URL
             var url = @"https://maps.googleapis.com/maps/api/staticmap?";
             // 中心座標
@@ -24,7 +29,7 @@ namespace MoveCountWatch
             // 画像サイズ（640x640まで）
             url += "&size=" + 640 + "x" + 640;
             // API Key（Google Maps Platform で発行されるキー）
-            url += "&key=" + GoogleApiKey;
+            url += "&key=" + _apiKey;
             
             url = UnityWebRequest.UnEscapeURL(url);
             var req = UnityWebRequestTexture.GetTexture(url);
